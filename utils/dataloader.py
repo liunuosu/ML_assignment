@@ -9,6 +9,9 @@ def dataloader(validation_size=0.2, random_state=42):
 
     x_train = data_train.drop('target', axis=1).values.astype('float32')
     y_train = data_train['target'].copy()
+    # 20.5 percent are 1 in y_train
+    # 79.5 percent are 0 in y_train
+
     #print(y_train)
     x_test = data_test.values.astype('float32')
 
