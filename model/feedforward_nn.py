@@ -1,6 +1,7 @@
 import tensorflow as tf
 from utils.metrics import accuracy
 from tensorflow.python.keras.layers import Dense
+import numpy as np
 
 
 class FeedForward(tf.Module):
@@ -8,25 +9,32 @@ class FeedForward(tf.Module):
         super(FeedForward, self).__init__()
         self.d1 = Dense(158, activation=tf.nn.relu)
         self.d2 = Dense(32, activation=tf.nn.relu)
-        self.d3 = Dense(num_classes, activation=None)
+        self.d3 = Dense(1, activation=None)
 
     def forward(self, x):
         # Compute the model output
         x = self.d1(x)
         x = self.d2(x)
         x = self.d3(x)
-        return tf.nn.softmax(x), x  # Probabilities and logits
+        #Activation function here
+
+        return tf.sigmoid(x), x  # Probabilities and logits
 
 
-def get_class(y_prob):
-    return tf.argmax(y_prob, axis=1)
+#def get_class(y_prob):
+ #   return tf.argmax(y_prob, axis=1)
+
+def get_class(y_pred, thresh=0.5):
+    # Return a tensor with  `1` if `y_pred` > `0.5`, and `0` otherwise
+
+    return tf.cast(y_pred > thresh, tf.float32)
 
 
 class FeedForwardModel:
     def __init__(self, num_epochs=50, batch_size=1024, weight_seed=42, pathdir=None):
         self.num_epochs = num_epochs
         self.batch_size = batch_size
-        self.weight_seed= weight_seed
+        self.weight_seed = weight_seed
         self.pathdir = pathdir
 
         self.model = None
@@ -53,12 +61,18 @@ class FeedForwardModel:
                 batch_features = x_train[batch_ids].astype('float32')
                 #print(y_train)
                 batch_labels = y_train[batch_ids].astype('float32')
+                #batch_labels = np.reshape(y_train[batch_ids], [-1, 1]).astype('float32')
 
                 with tf.GradientTape() as tape:
                     classifier_pred, classifier_logits = self.model.forward(batch_features)
 
+                    #print(batch_labels)
+                    #print(batch_labels.shape)
+                    #print(classifier_logits)
+                    #print(classifier_logits.shape)
+
                     loss_classifier = tf.reduce_mean(
-                        tf.nn.softmax_cross_entropy_with_logits(labels=batch_labels.astype('float32'),
+                        tf.nn.sigmoid_cross_entropy_with_logits(labels=batch_labels.astype('float32'),
                                                                 logits=classifier_logits))
                 gradients = tape.gradient(loss_classifier, self.model.trainable_variables)
                 classifier_opt.apply_gradients(zip(gradients, self.model.trainable_variables))
@@ -68,13 +82,13 @@ class FeedForwardModel:
                         x_train.astype('float32'))
 
                     train_accuracy = accuracy(get_class(y_prob),
-                                              tf.argmax(y_train, axis=1))
+                                              y_train)
 
                     y_prob_validation, pred_logits_validation = self.model.forward(
                         x_validation.astype('float32'))
 
                     validation_accuracy = accuracy(get_class(y_prob_validation),
-                                                   tf.argmax(y_validation, axis=1))
+                                                   (y_validation))
 
                     print("(Training Classifier) epoch %d; training accuracy: %f; "
                           "validation accuracy: %f; batch classifier loss: %f" % (

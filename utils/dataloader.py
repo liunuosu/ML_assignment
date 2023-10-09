@@ -22,7 +22,8 @@ def dataloader(validation_size=0.2, random_state=42):
     #y_train = y_train.toarray()
 
     x_train, x_validation, y_train, y_validation = \
-        train_test_split(x_train, y_train, test_size=validation_size, random_state=random_state)
+        train_test_split(x_train, y_train, test_size=validation_size, random_state=random_state,
+                         stratify=y_train)
 
     # TRY STRATIFIED sampling?
     #print(x_train.shape)
