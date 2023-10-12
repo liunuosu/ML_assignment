@@ -42,7 +42,7 @@ parameter = {
     'max_features' : ['sqrt','log2', None],
     'class_weight' : ['balanced','balanced_subsample']
 }
-rf = RandomForestClassifier(random_state=42, n_jobs=2)
+rf = RandomForestClassifier(random_state=42, n_jobs=-1)
 grid_search = GridSearchCV(estimator=rf, param_grid=parameter, cv=5, scoring='accuracy', n_jobs=-1)
 grid_search.fit(X_train, y_train)
 grid_search_params = grid_search.best_params_
