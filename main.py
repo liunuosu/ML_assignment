@@ -10,7 +10,7 @@ model_filename = now.strftime("%Y-%m-%d_%H-%M-%S")
 pathdir = Path("weights", model_filename)
 pathdir.mkdir(parents=True, exist_ok=True)
 
-n_epoch = 100
+n_epoch = 300
 batch_size = 512
 random_state = 42
 split = 0.1

@@ -55,8 +55,8 @@ def dataloader(validation_size=0.1, random_state=42):
 
     preprocessor = make_column_transformer(
         (StandardScaler(), continuous_variables),
-        (OneHotEncoder(handle_unknown='ignore'), categorical_variables)
-    )
+        ('passthrough', categorical_variables))
+
 
     x_train = pd.DataFrame(x_train)
     x_validation = pd.DataFrame(x_validation)

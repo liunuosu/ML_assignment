@@ -7,9 +7,9 @@ import numpy as np
 class FeedForward(tf.Module):
     def __init__(self, num_features, num_classes, seed=42):
         super(FeedForward, self).__init__()
-        self.d1 = Dense(158, activation=tf.nn.relu)
+        self.d1 = Dense(512, activation=tf.nn.relu)
        # self.d2 = Dense(64, activation=tf.nn.relu)
-        self.d3 = Dense(32, activation=tf.nn.relu)
+        self.d3 = Dense(216, activation=tf.nn.relu)
         self.d4 = Dense(1, activation=None)
 
     def forward(self, x):
@@ -20,7 +20,7 @@ class FeedForward(tf.Module):
         x = self.d4(x)
         #Activation function here
 
-        return tf.nn.sigmoid(x), x  # Probabilities and logits
+        return tf.nn.relu(x), x  # Probabilities and logits
 
 
 #def get_class(y_prob):
