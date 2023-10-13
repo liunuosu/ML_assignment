@@ -65,7 +65,7 @@ grid_search_params = grid_search.best_params_
 grid_search_estimator = grid_search.best_estimator_
 
 best_accuracy = grid_search.best_score_
-print(f'Best Accuracy: {best_accuracy:.2f}')
+print(f'Best Accuracy: {best_accuracy:.6f}')
 print("Best Parameters:", grid_search_params)
 y_hat = grid_search_estimator.predict(X_test)
 #print(y_hat)
